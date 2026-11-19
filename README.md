@@ -160,9 +160,10 @@ decisión. Guía completa en `deploy/README.md`.
 `sync.js` recibirá un 404 en `/api/health` y mostrará «Solo en este dispositivo
 (sin servidor)». Todo lo demás funciona igual. Ya hay un workflow listo en
 `.github/workflows/pages.yml` que publica `main` en GitHub Pages con
-`tools/preparar-pages.mjs`. **Requiere que el repo sea público** (el token de
-integración no puede cambiar la visibilidad) y, al ser estático, **no aplica
-`USUARIO_UNICO`**: ver la advertencia en `deploy/README.md`, opción E.
+`tools/preparar-pages.mjs`. Requiere dos ajustes previos en GitHub que solo el
+dueño puede hacer: **repo público** y *Settings → Pages → Source: GitHub
+Actions* (el `GITHUB_TOKEN` no puede crear el sitio). Al ser estático, **no
+aplica `USUARIO_UNICO`**: ver la advertencia en `deploy/README.md`, opción E.
 
 **Con backend (VPS / Docker / PaaS):** usa `Dockerfile` + `docker-compose.yml`, o
 `deploy/gestor-pagos.service.example`, o `deploy/render.yaml.example`. Imprescindible:

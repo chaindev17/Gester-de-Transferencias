@@ -51,13 +51,21 @@ backend, se queda en modo local sin cambiar el comportamiento.
 genera `_site/` con una allowlist de archivos, inserta un aviso de «versión
 pública estática» y verifica que el hash CSP sigue siendo válido.
 
-**Paso previo que solo el dueño puede hacer desde la web:** el repositorio debe
-ser **público** (*Settings → General → Danger zone → Change repository
-visibility*). Con plan Free, Pages no está disponible en repos privados. El
-token de integración de Arena no tiene permiso para cambiar la visibilidad ni
-para activar Pages por API (devuelve `403 Resource not accessible by
-integration`); el workflow usa el `GITHUB_TOKEN` del repo con `pages: write` y
-`actions/configure-pages@v5`, que sí puede habilitarlo.
+**Dos ajustes previos que solo el dueño puede hacer desde la web de GitHub:**
+
+1. **Hacer público el repositorio**: *Settings → General → Danger zone →
+   Change repository visibility → Public*. Con plan Free, Pages no está
+   disponible en repos privados.
+2. **Habilitar el sitio una vez**: *Settings → Pages → Build and deployment →
+   Source → GitHub Actions*. Esto crea el sitio; después el workflow estándar
+   funciona para siempre con el `GITHUB_TOKEN`.
+
+El token de integración de Arena **no puede** hacer ninguna de las dos cosas
+(la API responde `403 Resource not accessible by integration`), y el
+`GITHUB_TOKEN` de Actions **tampoco puede crear el sitio**: `enablement: true`
+en `actions/configure-pages@v5` exige un PAT o una GitHub App con
+`administration:write` + `pages:write`. Por eso el workflow no intenta
+habilitarlo, solo configura y despliega.
 
 > ⚠️ **Limitación inevitable:** Pages no ejecuta `server.mjs`. `sync.js` no
 > encuentra `/api/health`, cae al modo local y **el control
