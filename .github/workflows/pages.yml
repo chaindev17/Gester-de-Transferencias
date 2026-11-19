@@ -4,13 +4,16 @@
 # sin cuentas, sin sincronización y SIN el control USUARIO_UNICO. Los datos
 # del propietario nunca se publican (data/ está en .gitignore).
 #
-# Requisitos previos (solo los puede hacer el dueño desde la web de GitHub):
+# Ajustes previos que solo el dueño puede hacer en la web de GitHub:
 #   1. Settings -> General -> Danger zone -> Change repository visibility -> Public
 #      (con plan Free, Pages no está disponible en repositorios privados)
 #   2. Settings -> Pages -> Build and deployment -> Source -> GitHub Actions
 #      (crea el sitio una vez; el GITHUB_TOKEN NO puede crearlo por API)
-# El token de integración de Arena tampoco puede hacer ninguna de las dos cosas:
-# la API responde 403 "Resource not accessible by integration".
+#
+# El build y el deploy van en DOS JOBS con `needs:`: el artefacto de Pages se
+# finaliza al terminar el job que lo sube. Si ambas cosas ocurren en el mismo
+# job, deploy-pages puede listar 0 artefactos y fallar con
+# "No artifacts named github-pages were found for this workflow run".
 name: Publicar en GitHub Pages
 
 on:
@@ -18,31 +21,24 @@ on:
     branches: [main]
   workflow_dispatch:
 
-# El GITHUB_TOKEN puede DESPLEGAR en un sitio de Pages ya existente, pero NO
-# puede CREAR el sitio (operación de administración del repositorio).
 permissions:
   contents: read
-  pages: write
-  id-token: write
 
 concurrency:
   group: pages
   cancel-in-progress: false
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - name: Clonar
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
-          node-version: '20'
+          node-version: '22'
           cache: npm
 
       - name: Verificar (56 pruebas)
@@ -53,18 +49,28 @@ jobs:
       - name: Preparar artefacto estático
         run: node tools/preparar-pages.mjs
 
-      # Sin `enablement`: ese input solo funciona con un PAT o una GitHub App
-      # con administration:write + pages:write. Con GITHUB_TOKEN falla siempre
-      # con "Resource not accessible by integration". El sitio debe haberse
-      # habilitado una vez en Settings -> Pages -> Source: GitHub Actions.
-      - name: Configurar Pages
-        uses: actions/configure-pages@v5
-
       - name: Subir artefacto
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v5
         with:
           path: _site
+          name: github-pages
+          include-hidden-files: true
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+      actions: read
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Configurar Pages
+        uses: actions/configure-pages@v6
 
       - name: Desplegar
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
