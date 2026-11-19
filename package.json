@@ -1,0 +1,23 @@
+{
+  "name": "gester-de-transferencias",
+  "version": "1.1.0",
+  "private": true,
+  "description": "Gestor de Pagos - app estática con backend opcional de sincronización",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "node server.mjs",
+    "serve": "python3 -m http.server 8080 --bind 0.0.0.0",
+    "hashes": "node tools/actualizar-hashes.mjs",
+    "test": "npm run test:app && npm run test:server && npm run test:sync && npm run test:single",
+    "test:app": "node tests/app.test.mjs",
+    "test:server": "node --test tests/server.test.mjs",
+    "test:sync": "node --test tests/sync.test.mjs",
+    "test:single": "node --test tests/single-user.test.mjs"
+  },
+  "devDependencies": {
+    "jsdom": "^26.1.0"
+  }
+}

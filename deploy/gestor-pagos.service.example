@@ -1,0 +1,39 @@
+# Unidad systemd para un VPS. PLANTILLA: ajusta rutas y usuario.
+#   sudo cp deploy/gestor-pagos.service.example /etc/systemd/system/gestor-pagos.service
+#   sudo systemctl daemon-reload && sudo systemctl enable --now gestor-pagos
+[Unit]
+Description=Gestor de Pagos (app + API de sincronización)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=gestor
+Group=gestor
+WorkingDirectory=/opt/gestor
+Environment=NODE_ENV=production
+Environment=PORT=8080
+Environment=HOST=127.0.0.1
+Environment=DATA_DIR=/var/lib/gestor
+Environment=TRUST_PROXY=1
+ExecStart=/usr/bin/node /opt/gestor/server.mjs
+Restart=always
+RestartSec=3
+
+# Endpoint de salud del propio proceso
+ExecStartPost=/bin/sh -c 'for i in $(seq 1 20); do wget -q -O - http://127.0.0.1:8080/api/health >/dev/null && exit 0; sleep 0.3; done; exit 1'
+
+# Endurecimiento
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/gestor
+ProtectKernelTunables=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+CapabilityBoundingSet=
+AmbientCapabilities=
+
+[Install]
+WantedBy=multi-user.target

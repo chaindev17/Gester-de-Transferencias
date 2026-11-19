@@ -1,0 +1,13 @@
+node_modules/
+.DS_Store
+*.log
+Thumbs.db
+
+# Datos de usuarios del backend: NUNCA versionar
+data/
+*.tmp
+.env
+.env.local
+
+# Artefactos de pruebas
+coverage/

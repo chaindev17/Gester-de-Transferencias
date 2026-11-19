@@ -1,0 +1,29 @@
+# Blueprint de Render (PLANTILLA, no se aplica automáticamente).
+# Copia a render.yaml, revisa región/plan y crea el servicio desde el dashboard.
+# Requiere disco persistente: sin él, los usuarios y sus datos se pierden en
+# cada despliegue. Render termina TLS, así que TRUST_PROXY=1.
+databases: []
+
+services:
+  - type: web
+    name: gestor-de-pagos
+    runtime: docker
+    plan: starter
+    region: oregon
+    healthCheckPath: /api/health
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    autoDeploy: true
+    envVars:
+      - key: PORT
+        value: "8080"
+      - key: HOST
+        value: "0.0.0.0"
+      - key: DATA_DIR
+        value: /app/data
+      - key: TRUST_PROXY
+        value: "1"
+    disk:
+      name: gestor-data
+      mountPath: /app/data
+      sizeGB: 1
