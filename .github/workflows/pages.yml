@@ -4,9 +4,13 @@
 # sin cuentas, sin sincronización y SIN el control USUARIO_UNICO. Los datos
 # del propietario nunca se publican (data/ está en .gitignore).
 #
-# Requisito previo (solo lo puede hacer el dueño del repo desde la web):
-#   Settings -> General -> Danger zone -> Change repository visibility -> Public
-# En un repo privado con plan Free, GitHub Pages no está disponible.
+# Requisitos previos (solo los puede hacer el dueño desde la web de GitHub):
+#   1. Settings -> General -> Danger zone -> Change repository visibility -> Public
+#      (con plan Free, Pages no está disponible en repositorios privados)
+#   2. Settings -> Pages -> Build and deployment -> Source -> GitHub Actions
+#      (crea el sitio una vez; el GITHUB_TOKEN NO puede crearlo por API)
+# El token de integración de Arena tampoco puede hacer ninguna de las dos cosas:
+# la API responde 403 "Resource not accessible by integration".
 name: Publicar en GitHub Pages
 
 on:
@@ -14,8 +18,8 @@ on:
     branches: [main]
   workflow_dispatch:
 
-# GITHUB_TOKEN del propio repositorio: a diferencia del token de integración
-# de Arena, este SÍ puede habilitar Pages y desplegar en el environment.
+# El GITHUB_TOKEN puede DESPLEGAR en un sitio de Pages ya existente, pero NO
+# puede CREAR el sitio (operación de administración del repositorio).
 permissions:
   contents: read
   pages: write
@@ -49,10 +53,12 @@ jobs:
       - name: Preparar artefacto estático
         run: node tools/preparar-pages.mjs
 
-      - name: Habilitar y configurar Pages
+      # Sin `enablement`: ese input solo funciona con un PAT o una GitHub App
+      # con administration:write + pages:write. Con GITHUB_TOKEN falla siempre
+      # con "Resource not accessible by integration". El sitio debe haberse
+      # habilitado una vez en Settings -> Pages -> Source: GitHub Actions.
+      - name: Configurar Pages
         uses: actions/configure-pages@v5
-        with:
-          enablement: true
 
       - name: Subir artefacto
         uses: actions/upload-pages-artifact@v3
