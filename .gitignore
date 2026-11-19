@@ -11,3 +11,6 @@ data/
 
 # Artefactos de pruebas
 coverage/
+
+# Artefacto generado para GitHub Pages
+_site/

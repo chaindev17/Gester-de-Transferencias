@@ -1,0 +1,64 @@
+# Publica la versión ESTÁTICA de la app en GitHub Pages.
+#
+# IMPORTANTE: Pages no ejecuta server.mjs. Esta copia funciona en modo local,
+# sin cuentas, sin sincronización y SIN el control USUARIO_UNICO. Los datos
+# del propietario nunca se publican (data/ está en .gitignore).
+#
+# Requisito previo (solo lo puede hacer el dueño del repo desde la web):
+#   Settings -> General -> Danger zone -> Change repository visibility -> Public
+# En un repo privado con plan Free, GitHub Pages no está disponible.
+name: Publicar en GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# GITHUB_TOKEN del propio repositorio: a diferencia del token de integración
+# de Arena, este SÍ puede habilitar Pages y desplegar en el environment.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Clonar
+        uses: actions/checkout@v4
+
+      - name: Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+
+      - name: Verificar (56 pruebas)
+        run: |
+          npm ci --no-audit --no-fund
+          npm test
+
+      - name: Preparar artefacto estático
+        run: node tools/preparar-pages.mjs
+
+      - name: Habilitar y configurar Pages
+        uses: actions/configure-pages@v5
+        with:
+          enablement: true
+
+      - name: Subir artefacto
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+      - name: Desplegar
+        id: deployment
+        uses: actions/deploy-pages@v4

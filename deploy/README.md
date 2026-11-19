@@ -43,6 +43,35 @@ backend, se queda en modo local sin cambiar el comportamiento.
 
 ---
 
+## Opción E — GitHub Pages (estático, público)
+
+`/.github/workflows/pages.yml` publica **solo la versión estática** en
+`https://chaindev17.github.io/Gester-de-Transferencias/` en cada push a `main`
+(o con *Run workflow* desde la pestaña Actions). `tools/preparar-pages.mjs`
+genera `_site/` con una allowlist de archivos, inserta un aviso de «versión
+pública estática» y verifica que el hash CSP sigue siendo válido.
+
+**Paso previo que solo el dueño puede hacer desde la web:** el repositorio debe
+ser **público** (*Settings → General → Danger zone → Change repository
+visibility*). Con plan Free, Pages no está disponible en repos privados. El
+token de integración de Arena no tiene permiso para cambiar la visibilidad ni
+para activar Pages por API (devuelve `403 Resource not accessible by
+integration`); el workflow usa el `GITHUB_TOKEN` del repo con `pages: write` y
+`actions/configure-pages@v5`, que sí puede habilitarlo.
+
+> ⚠️ **Limitación inevitable:** Pages no ejecuta `server.mjs`. `sync.js` no
+> encuentra `/api/health`, cae al modo local y **el control
+> `USUARIO_UNICO=Chain` no se aplica**. Los datos del propietario no se
+> publican (`data/` está en `.gitignore`), pero cualquier visitante puede usar
+> la herramienta con datos vacíos en su propio navegador. Para acceso privado
+> real usa las opciones A–D (hosting con Node).
+
+Para publicar los cambios: haz push/merge en `main` y el workflow se dispara
+solo. Comprueba el resultado en la pestaña **Actions** y con
+`gh run list --workflow pages.yml`.
+
+---
+
 ## Opción A — Node directo
 
 ```bash
