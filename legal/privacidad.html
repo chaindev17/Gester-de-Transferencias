@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Privacidad · Gestor de Pagos</title>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'unsafe-inline'; script-src 'none'; img-src 'self' data:; object-src 'none'; base-uri 'none'; form-action 'none'">
+<style>
+  :root { color-scheme: light dark; }
+  body { max-width: 760px; margin: 0 auto; padding: 28px 20px 60px; font: 16px/1.65 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; color: #22223a; background: #f7f8fc; }
+  @media (prefers-color-scheme: dark) { body { color: #e8e8f0; background: #11111f; } a { color: #a29bfe; } }
+  h1 { font-size: 1.7rem; margin-bottom: .2em; }
+  h2 { font-size: 1.1rem; margin-top: 1.9em; color: #6c5ce7; }
+  p, li { margin: .6em 0; }
+  .meta, .aviso { font-size: .88rem; color: #6b6b8a; }
+  .aviso { background: #fff3cd; color: #6b5200; border-radius: 10px; padding: 12px 14px; }
+  a { color: #4a3db8; }
+  nav { font-size: .9rem; margin-bottom: 24px; }
+</style>
+</head>
+<body>
+<nav><a href="../index.html">← Volver a la app</a> · <a href="terminos.html">Términos</a> · <a href="descargo.html">Descargo</a></nav>
+<h1>Política de privacidad</h1>
+<p class="meta">Última actualización: 19 de noviembre de 2026</p>
+
+<p class="aviso"><strong>Importante:</strong> este documento es una plantilla. Antes de publicar la aplicación,
+sustituye los datos de contacto por los reales del responsable y revísalo con asesoramiento legal
+de tu jurisdicción.</p>
+
+<h2>1. Responsable y ámbito</h2>
+<p>Gestor de Pagos es una herramienta de registro contable manual. El responsable del tratamiento
+es quien opera el servicio (en adelante, «el Responsable»). Contacto:
+<strong>[completar: nombre/razón social, correo electrónico y país]</strong>.</p>
+<p>La app puede funcionar en dos modos, que determinan dónde están tus datos:</p>
+<ul>
+  <li><strong>Modo local (por defecto en hosting estático):</strong> no hay servidor. Toda la información
+  se guarda en el almacenamiento del propio navegador (<code>localStorage</code>) y no sale del dispositivo.</li>
+  <li><strong>Modo servidor (cuando está disponible y lo activas):</strong> se crea una cuenta y los datos
+  se envían al servidor del Responsable para poder sincronizarlos entre dispositivos.</li>
+</ul>
+
+<h2>2. Datos que se tratan</h2>
+<ul>
+  <li>De la cuenta: nombre de usuario, contraseña (solo su derivada criptográfica, nunca en texto plano),
+  correo electrónico opcional, fecha de alta y, en modo servidor, un token de sesión en cookie
+  <code>HttpOnly</code> / <code>SameSite=Strict</code>.</li>
+  <li>De la actividad: nombres de clientes, porcentajes de comisión, saldos, importes, comisiones,
+  fechas, números de tarjeta o monedero de destino, descripciones de movimientos y número de operación.</li>
+  <li>No se solicitan datos de categorías especiales (salud, biometría, etc.).</li>
+</ul>
+
+<h2>3. Finalidad y base jurídica</h2>
+<p>Los datos se usan exclusivamente para llevar el registro de operaciones que tú introduces, calcular
+saldos y comisiones, generar informes y —en modo servidor— mantener la sincronización y las copias
+de seguridad. La base es tu consentimiento al crear un perfil y usar la herramienta; no se toman
+decisiones automatizadas ni se elaboran perfiles comerciales.</p>
+
+<h2>4. Conservación</h2>
+<ul>
+  <li>Modo local: hasta que borres los datos del navegador, los sustituyas con una importación o
+  uses «Borrar todos los datos».</li>
+  <li>Modo servidor: mientras la cuenta exista. El servidor conserva un histórico acotado de copias
+  (12 instantáneas) y sesiones de 7 días. Puedes solicitar la supresión total escribiendo al contacto.</li>
+</ul>
+
+<h2>5. Seguridad y limitaciones (léelo con atención)</h2>
+<p>En modo local los datos <strong>no están cifrados</strong>: cualquier persona con acceso al dispositivo
+o a la consola del navegador puede leerlos. La contraseña separa perfiles dentro del navegador,
+<strong>no es una barrera de seguridad</strong> frente a terceros con acceso al equipo. En modo servidor
+las contraseñas se derivan con scrypt, las sesiones usan cookies HttpOnly y el transporte debe realizarse
+por HTTPS. Aun así, ningún sistema es infalible: no introduzcas datos que no necesites y no guardes
+números completos de tarjeta si no son imprescindibles.</p>
+
+<h2>6. Cesión a terceros</h2>
+<p>No se venden ni ceden datos a terceros. En modo servidor, el proveedor de infraestructura que aloje
+el servicio actúa como encargado de tratamiento. No se usan servicios de analítica, publicidad ni
+rastreadores de terceros. Las librerías de la app se sirven desde el propio dominio.</p>
+
+<h2>7. Tus derechos</h2>
+<p>Puedes acceder, rectificar, suprimir u oponerte al tratamiento, así como exportar tus datos en JSON
+desde la propia aplicación. Si estás en Uruguay, estos derechos se amparan en la Ley 18.331 de
+Protección de Datos Personales; si estás en la UE/EEE, en el RGPD. Escribe a
+<strong>[completar correo de contacto]</strong>. También puedes reclamar ante la autoridad de control
+correspondiente (en Uruguay, la URCDP).</p>
+
+<h2>8. Menores de edad</h2>
+<p>La herramienta está dirigida a personas mayores de 18 años. No se recogen deliberadamente datos
+de menores.</p>
+
+<h2>9. Cambios</h2>
+<p>Se publicará aquí cualquier cambio relevante, con la fecha de actualización. El uso continuado
+tras la publicación implica conocimiento de la nueva versión.</p>
+
+<p><a href="terminos.html">Términos de uso</a> · <a href="descargo.html">Descargo de responsabilidad</a></p>
+</body>
+</html>

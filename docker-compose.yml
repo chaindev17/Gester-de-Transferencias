@@ -1,0 +1,29 @@
+# Arranque local/con VPS:  docker compose up -d --build
+# Los datos sobreviven a recreaciones del contenedor gracias al volumen.
+services:
+  gestor:
+    build: .
+    image: gestor-de-pagos:local
+    container_name: gestor-de-pagos
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      PORT: "8080"
+      HOST: "0.0.0.0"
+      DATA_DIR: /app/data
+      # Pon "1" si publicas SOLO a través del proxy HTTPS de abajo.
+      TRUST_PROXY: "0"
+      # Acceso privado: descomenta y crea la cuenta con tools/crear-usuario.mjs
+      # USUARIO_UNICO: "Chain"
+    volumes:
+      - gestor-data:/app/data
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "-", "http://127.0.0.1:8080/api/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+
+volumes:
+  gestor-data:
