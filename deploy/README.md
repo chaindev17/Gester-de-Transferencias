@@ -49,7 +49,10 @@ backend, se queda en modo local sin cambiar el comportamiento.
 `https://chaindev17.github.io/Gester-de-Transferencias/` en cada push a `main`
 (o con *Run workflow* desde la pestaña Actions). `tools/preparar-pages.mjs`
 genera `_site/` con una allowlist de archivos, inserta un aviso de «versión
-pública estática» y verifica que el hash CSP sigue siendo válido.
+pública estática» y verifica que el hash CSP sigue siendo válido. El workflow
+usa **dos jobs** (`build` → `deploy` con `needs:`): el artefacto de Pages se
+finaliza al terminar el primer job, evitando el error «No artifacts named
+github-pages were found» que aparece si se sube y se despliega en el mismo job.
 
 **Dos ajustes previos que solo el dueño puede hacer desde la web de GitHub:**
 
